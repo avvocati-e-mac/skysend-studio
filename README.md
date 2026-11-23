@@ -1,6 +1,8 @@
 # SkySend Studio
 
-SkySend Studio aiuta avvocati e altri professionisti a scambiare documenti con i clienti. Puoi inviare un fascicolo, chiedere i documenti per una pratica e decidere per quanto tempo il link sarà disponibile e quante volte si potrà usare. Il cliente apre il link nel suo browser, anche dal cellulare.
+SkySend Studio aiuta avvocati e altri professionisti a scambiare documenti con i clienti **in modo sicuro e trasparente**. Puoi inviare un fascicolo, chiedere i documenti per una pratica e decidere per quanto tempo il link sarà disponibile e quante volte si potrà usare. Il cliente apre il link nel suo browser, anche dal cellulare.
+
+SkySend cifra i file prima di trasferirli. Per scaricare i documenti, il cliente usa una password che puoi comunicare separatamente dal link. La guida mostra cosa vede il cliente durante lo scambio e spiega dove vengono salvati i file. La configurazione è consultabile in questo repository.
 
 In questa configurazione crei e chiudi i link dal **pannello riservato sul tuo Mac**. Le due cartelle di lavoro separano i file che vuoi inviare da quelli che SkySend salva automaticamente quando arrivano. Cloudflare rende raggiungibili su Internet le pagine dei clienti. Il pannello di studio resta accessibile solo dal computer che ospita SkySend.
 
