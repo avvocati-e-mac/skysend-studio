@@ -2,13 +2,12 @@
 
 SkySend Studio aiuta avvocati e altri professionisti a scambiare documenti con i clienti **in modo sicuro e trasparente**. Puoi inviare un fascicolo, chiedere i documenti per una pratica e decidere per quanto tempo il link sarà disponibile e quante volte si potrà usare. Il cliente apre il link nel suo browser, anche dal cellulare.
 
-SkySend cifra i file prima di trasferirli. Per scaricare i documenti, il cliente usa una password che puoi comunicare separatamente dal link. La guida mostra cosa vede il cliente durante lo scambio e spiega dove vengono salvati i file. La configurazione è consultabile in questo repository.
-
-In questa configurazione crei e chiudi i link dal **pannello riservato sul tuo Mac**. Le due cartelle di lavoro separano i file che vuoi inviare da quelli che SkySend salva automaticamente quando arrivano. Cloudflare rende raggiungibili su Internet le pagine dei clienti. Il pannello di studio resta accessibile solo dal computer che ospita SkySend.
+Lo scopo è gestire lo scambio di file **sul Mac dello studio**, senza usare un servizio esterno come archivio dei documenti. Crei e chiudi i link dal pannello locale e ritrovi i file ricevuti nella tua cartella di lavoro. Cloudflare Tunnel rende raggiungibili i link su Internet. SkySend cifra i documenti prima che vengano trasferiti.
 
 ## Indice
 
 - [Scarica il progetto sul tuo Mac](#scarica-il-progetto-sul-tuo-mac)
+- [Come sono protetti i file e il collegamento](#come-sono-protetti-i-file-e-il-collegamento)
 - [Prima installazione su Mac](#prima-installazione-su-mac)
 - [Da usare ogni giorno](#da-usare-ogni-giorno)
   - [Inviare documenti a un cliente](#inviare-documenti-a-un-cliente)
@@ -26,6 +25,21 @@ In questa configurazione crei e chiudi i link dal **pannello riservato sul tuo M
 3. Dentro la cartella estratta, fai doppio clic su **Guida SkySend.html**. Si apre nel browser con le istruzioni illustrate. Nella stessa cartella trovi **Avvia SkySend.command**, il file da aprire quando arrivi al passo 3 dell’installazione.
 
 Conserva tutta la cartella estratta. Contiene i file necessari all’avvio e le immagini della guida. Le cartelle in cui metterai i documenti vengono create a parte al primo avvio.
+
+## Come sono protetti i file e il collegamento
+
+### SkySend protegge il contenuto dei documenti
+
+- **Quando invii un documento**, SkySend lo cifra sul Mac prima di renderlo disponibile. Il browser del cliente lo decifra dopo che il cliente ha inserito la password generata per quel download. Puoi comunicare la password su un canale separato dal link. [Come funziona la cifratura in SkySend](https://docs.skysend.app/user-guide/security/encryption)
+- **Quando chiedi un documento**, il browser del cliente lo cifra prima di inviarlo. Il pannello sul Mac lo apre con la chiave privata della richiesta e lo salva in **Upload dai clienti**. [Come sono protette le richieste di file](https://docs.skysend.app/developer-guide/crypto/file-requests)
+
+Il server SkySend gira sul Mac e conserva su quel computer le copie cifrate usate dai link. Anche il pannello, le chiavi delle richieste e le copie leggibili di lavoro sono sul Mac. Se tieni le cartelle di lavoro in una posizione sincronizzata, anche quel servizio può conservare una copia. La sezione [Dati e manutenzione](#dati-e-manutenzione) indica dove si trova ciascun dato.
+
+### Cloudflare Tunnel protegge il collegamento al Mac
+
+Il browser del cliente si collega a Cloudflare in **HTTPS**. Il Mac apre verso Cloudflare un **tunnel cifrato in uscita**. Puoi quindi rendere raggiungibili i link senza aprire porte in ingresso sul router dello studio. Il tunnel inoltra le visite a un ingresso dedicato alle pagine di invio e scaricamento. L’indirizzo `http://skysend:3000` usato nell’installazione riguarda solo il collegamento fra i servizi Docker sul Mac. Il pannello che crea e chiude i link rimane accessibile solo dal Mac. [Come funziona Cloudflare Tunnel](https://developers.cloudflare.com/tunnel/) · [Configurazione dei servizi locali](compose.yaml)
+
+Cloudflare è comunque un intermediario del collegamento. Gestisce l’HTTPS che arriva dal browser e può vedere informazioni come l’indirizzo IP e il percorso richiesto. Il contenuto dei file che transita è già cifrato da SkySend. Il browser riceve la pagina di SkySend attraverso Cloudflare, quindi questa configurazione si affida a Cloudflare anche per la consegna di quella pagina. [Connessioni HTTPS di Cloudflare](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/) · [Dati delle richieste HTTP](https://developers.cloudflare.com/logs/logpush/logpush-job/datasets/zone/http_requests/)
 
 ## Prima installazione su Mac
 
@@ -166,6 +180,8 @@ Nel test su rete 4G, uno ZIP da **154,9 MB** ha impiegato alcuni minuti. Al term
 </details>
 
 **Mentre i link sono attivi**, lascia il Mac acceso e connesso a Internet, con OrbStack in esecuzione. Puoi chiudere il browser. I documenti ricevuti vengono salvati anche a browser chiuso.
+
+**Quando hai finito di condividere e ricevere file**, puoi fermare il gruppo **skysend** in OrbStack. I documenti già salvati e le impostazioni restano sul Mac. I link rimangono irraggiungibili fino al riavvio e continuano a scadere secondo la data impostata. Per riprendere, apri **Avvia SkySend.command**.
 
 ## Prima prova con un file fittizio
 
