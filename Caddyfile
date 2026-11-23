@@ -1,0 +1,83 @@
+{
+	admin off
+	auto_https off
+}
+
+(client_proxy) {
+	reverse_proxy server:3000 {
+		header_up X-Forwarded-For {http.request.header.CF-Connecting-IP}
+		header_up -X-Real-IP
+		header_down Cache-Control "no-store"
+	}
+}
+
+:3000 {
+	# Percorsi effettivamente usati dal client web della versione SkySend del Compose.
+	# La pagina principale, la creazione dei link e tutte le operazioni dell'inbox
+	# restano raggiungibili solo dal pannello. Qualunque altro percorso è rifiutato.
+	@static {
+		method GET HEAD
+		path_regexp static ^/(?:assets/[a-zA-Z0-9._-]+|logo\.(?:png|svg)|favicon\.svg|apple-touch-icon\.png|download-sw\.js|theme-init\.js|manifest\.webmanifest|pwa-(?:192x192|512x512)\.png)$
+	}
+	@links {
+		method GET
+		path_regexp link ^/(?:file|d|request)/[0-9a-f-]{36}/?$
+	}
+	@read {
+		method GET
+		path_regexp read ^/api/(?:(?:config|quota)|(?:info|exists|download|request)/[0-9a-f-]{36}|request/[0-9a-f-]{36}/upload/ws)$
+	}
+	@write {
+		method POST
+		path_regexp write ^/api/(?:password/[0-9a-f-]{36}|request/[0-9a-f-]{36}/upload/(?:init|[0-9a-f-]{36}/(?:chunk|finalize)))$
+	}
+	@cancel {
+		method DELETE
+		path_regexp cancel ^/api/request/[0-9a-f-]{36}/upload/[0-9a-f-]{36}$
+	}
+	@plainHttp header X-Forwarded-Proto http
+	@customerScript {
+		method GET HEAD
+		path /studio-client.js
+	}
+
+	route {
+		redir @plainHttp https://{http.request.host}{http.request.uri} 308
+		handle @customerScript {
+			header Cache-Control "no-store"
+			header X-Content-Type-Options nosniff
+			root * /etc/skysend-gateway
+			file_server
+		}
+		handle @static {
+			reverse_proxy server:3000
+		}
+		header Cache-Control "no-store"
+		handle @links {
+			# Stesse protezioni della pagina SkySend, compreso WebAssembly per Argon2.
+			header {
+				Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; child-src 'self' blob:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+				Referrer-Policy no-referrer
+				Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+				X-Content-Type-Options nosniff
+				X-Frame-Options DENY
+				X-DNS-Prefetch-Control off
+				X-Download-Options noopen
+				X-Permitted-Cross-Domain-Policies none
+			}
+			root * /tmp/skysend-pages
+			rewrite * /index.html
+			file_server
+		}
+		handle @read {
+			import client_proxy
+		}
+		handle @write {
+			import client_proxy
+		}
+		handle @cancel {
+			import client_proxy
+		}
+		respond "Link non disponibile" 404
+	}
+}

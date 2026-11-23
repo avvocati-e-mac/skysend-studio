@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkySend Studio · Guida illustrata per Mac</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #182d27;
+      --muted: #425c51;
+      --green: #175744;
+      --line: #d1ddd4;
+      --paper: #fbfaf5;
+      --note: #e8f1ea;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 1.09rem/1.6 system-ui, sans-serif; }
+    main { width: min(100% - 2rem, 53rem); margin: 0 auto 4rem; }
+    header { padding: clamp(2rem, 9vw, 5rem) 0 2rem; border-bottom: 2px solid var(--green); }
+    h1, h2 { font-family: Georgia, serif; line-height: 1.1; }
+    h1 { font-size: clamp(2.9rem, 8vw, 5.1rem); margin: 0 0 .75rem; letter-spacing: -.045em; }
+    h2 { font-size: clamp(1.95rem, 5vw, 2.7rem); margin: 0 0 1rem; letter-spacing: -.025em; }
+    h3 { margin: 2rem 0 .55rem; line-height: 1.3; font-size: 1.23rem; }
+    p { margin: .65rem 0; }
+    header p { max-width: 38rem; color: var(--muted); }
+    .subtitle { font-size: 1.3rem; }
+    a { color: var(--green); text-underline-offset: .19em; }
+    a:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+    nav ul { display: flex; flex-wrap: wrap; gap: .55rem 1.15rem; margin: 0; padding: 1rem 0; list-style: none; }
+    section { margin-top: 2.6rem; padding-top: 1.15rem; border-top: 1px solid var(--line); scroll-margin: 1rem; }
+    ol, ul { padding-inline-start: 1.6rem; }
+    li + li { margin-top: .3rem; }
+    nav li + li { margin-top: 0; }
+    .note { padding: .85rem 1rem; background: var(--note); border-left: .25rem solid var(--green); margin: 1rem 0; }
+    figure { margin: 1rem 0 1.45rem; }
+    img { display: block; width: auto; max-width: 100%; max-height: 40rem; border: 1px solid var(--line); border-radius: .45rem; }
+    figcaption { color: var(--muted); margin-top: .4rem; font-size: .94rem; }
+    .phone-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: 1rem; list-style-position: inside; padding: 0; }
+    .phone-steps li { margin: 0; }
+    .phone-steps figure { margin: .45rem 0 0; }
+    .phone-steps img { max-height: 28rem; }
+    code { font-size: .94em; background: #eef2eb; padding: .12em .3em; overflow-wrap: anywhere; }
+    .fields { display: grid; grid-template-columns: minmax(7.5rem, auto) 1fr; gap: .5rem 1rem; }
+    .fields dt { font-weight: 700; }
+    .fields dd { margin: 0; }
+    footer { border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: .75rem; }
+    @media print {
+      body { background: white; font-size: 10pt; }
+      main { width: 100%; margin: 0; }
+      header { padding-top: 0; }
+      h2, h3 { break-after: avoid; }
+      figure { break-inside: avoid; }
+      img { max-height: 16cm; }
+      .phone-steps img { max-height: 9cm; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>SkySend Studio</h1>
+    <p class="subtitle">Guida illustrata per Mac</p>
+    <p>Crea dal tuo Mac un link per inviare documenti al cliente o per chiedergli di caricarli. Il cliente apre il link nel suo browser. Tu gestisci i link dal pannello di studio sul tuo computer.</p>
+  </header>
+
+  <nav aria-label="Indice della guida">
+    <ul>
+      <li><a href="#installazione">Prima installazione</a></li>
+      <li><a href="#inviare">Inviare documenti</a></li>
+      <li><a href="#ricevere">Ricevere documenti</a></li>
+      <li><a href="#prova">Prova e problemi comuni</a></li>
+    </ul>
+  </nav>
+
+  <section id="installazione" aria-labelledby="installazione-titolo">
+    <h2 id="installazione-titolo">Prima installazione</h2>
+    <div class="note">
+      <strong>Serve un dominio proprio con il DNS gestito da Cloudflare.</strong> Il DNS è il servizio che collega gli indirizzi del tuo dominio a ciò che devono aprire. Puoi aggiungere a Cloudflare un dominio acquistato altrove. Per SkySend scegli un sottodominio libero, per esempio <code>invii.studio.it</code> se il tuo dominio è <code>studio.it</code>.
+      <a href="https://developers.cloudflare.com/tunnel/get-started/#prerequisites">Requisiti ufficiali di Cloudflare</a>.
+    </div>
+    <p>Installa e apri OrbStack sul Mac. Da GitHub scegli <strong>Code → Download ZIP</strong>, apri lo ZIP scaricato e conserva la cartella del progetto con tutti i suoi file. Ogni professionista configura il proprio tunnel e le proprie cartelle. <a href="https://orbstack.dev/">Scarica OrbStack</a>.</p>
+
+    <h3>1. Crea il tunnel in Cloudflare</h3>
+    <p>Il tunnel è la connessione che permette ai clienti di raggiungere i loro link. Nel pannello Cloudflare vai in <strong>Servizi rete → Tunnels → Crea Tunnel</strong>. Scrivi <code>skysend</code> come nome e premi <strong>Crea Tunnel</strong>.</p>
+    <figure>
+      <img src="docs/images/cloudflare-apri-tunnels.png" alt="Menu Servizi rete con la voce Tunnels evidenziata">
+      <figcaption>Apri Servizi rete e scegli Tunnels.</figcaption>
+    </figure>
+    <figure>
+      <img src="docs/images/cloudflare-crea-tunnel.png" alt="Pulsante blu Crea Tunnel nella dashboard Cloudflare">
+      <figcaption>Premi Crea Tunnel.</figcaption>
+    </figure>
+
+    <h3>2. Copia il token</h3>
+    <p>Scegli <strong>Docker</strong> anche se sei su Mac. Premi l’icona di copia a destra di <strong>Run tunnel with Docker</strong> e incolla il comando in un editor di testo. Copia solo la parte dopo <code>--token</code>, che inizia con <code>eyJ</code>. È la credenziale del tunnel. Tienila privata e chiudi il testo senza salvarlo. Se il tunnel esiste già, trovi il comando aprendo il tunnel e scegliendo <strong>Aggiungi una replica</strong>. <a href="https://developers.cloudflare.com/tunnel/reference/tunnel-tokens/#get-the-token">Istruzioni Cloudflare sul token</a>.</p>
+    <figure>
+      <img src="docs/images/cloudflare-seleziona-docker.png" alt="Docker selezionato in Cloudflare sopra la riga con il comando da copiare">
+      <figcaption>Lascia aperta questa scheda. Il pulsante Continua si attiverà dopo la connessione.</figcaption>
+    </figure>
+
+    <h3>3. Avvia SkySend sul Mac</h3>
+    <ol>
+      <li>Apri la cartella del progetto in Finder e fai doppio clic su <strong>Avvia SkySend.command</strong>.</li>
+      <li>Incolla il token e premi Invio. Durante l’incolla la finestra rimane vuota per proteggere la credenziale.</li>
+      <li>Scrivi il sottodominio completo, ad esempio <code>invii.studio.it</code>, e premi Invio.</li>
+      <li>Premi ancora Invio per usare <strong>Documenti → SkySend</strong>. Se Documenti è sincronizzata con iCloud e vuoi tenere i file sul Mac, scrivi il percorso di una cartella locale fuori da iCloud Drive, ad esempio <code>~/SkySend</code>.</li>
+      <li>Il primo avvio può richiedere qualche minuto. Quando Cloudflare indica <strong>Tunnel connesso con successo</strong>, premi <strong>Continua</strong>.</li>
+    </ol>
+    <figure>
+      <img src="docs/images/cloudflare-tunnel-connesso.png" alt="Cloudflare mostra Tunnel connesso con successo e il pulsante Continua è attivo">
+    </figure>
+    <figure>
+      <img src="docs/images/orbstack-servizi-attivi.png" alt="OrbStack mostra i quattro servizi SkySend, ognuno con un indicatore verde">
+      <figcaption>Nel gruppo skysend di OrbStack, quattro indicatori verdi mostrano che i servizi sono avviati.</figcaption>
+    </figure>
+
+    <h3>4. Collega il sottodominio</h3>
+    <p>In Cloudflare apri il tunnel <code>skysend</code>. In <strong>Rotte</strong>, premi <strong>Aggiungi rotta</strong> e scegli <strong>Applicazione pubblicata</strong>. La rotta indica a Cloudflare dove mandare le visite a quel sottodominio.</p>
+    <figure>
+      <img src="docs/images/cloudflare-aggiungi-rotta.png" alt="Scheda Rotte del tunnel skysend con il pulsante Aggiungi rotta">
+    </figure>
+    <dl class="fields">
+      <dt>Sottodominio</dt><dd>La prima parte dell’indirizzo, ad esempio <code>invii</code>.</dd>
+      <dt>Dominio</dt><dd>Seleziona il tuo dominio, nell’esempio <code>studio.it</code>.</dd>
+      <dt>Percorso</dt><dd>Lascia vuoto.</dd>
+      <dt>URL del servizio</dt><dd>Scrivi <code>http://skysend:3000</code>. Se Cloudflare mostra due campi, scegli <strong>HTTP</strong> e scrivi <code>skysend:3000</code> nell’altro campo.</dd>
+    </dl>
+    <p>Controlla che <strong>Hostname completo</strong> coincida con il sottodominio che hai scritto sul Mac. Premi <strong>Aggiungi percorso</strong> e aspetta la conferma. <a href="https://developers.cloudflare.com/tunnel/get-started/#publish-an-application">Istruzioni Cloudflare sulle rotte</a>.</p>
+    <figure>
+      <img src="docs/images/cloudflare-url-servizio.png" alt="Campo URL del servizio compilato con http://skysend:3000 e pulsante Aggiungi percorso">
+      <figcaption>Cloudflare risponde con il messaggio Route aggiunta correttamente.</figcaption>
+    </figure>
+
+    <h3>5. Apri il pannello e trova le cartelle</h3>
+    <p>Sul Mac che ospita SkySend apri <a href="http://127.0.0.1:8787">http://127.0.0.1:8787</a>. Puoi salvare l’indirizzo nei preferiti. I clienti ricevono invece i link che copi da <strong>Link creati</strong>.</p>
+    <ul>
+      <li><strong>Download per i clienti</strong> contiene i documenti che vuoi inviare.</li>
+      <li><strong>Upload dai clienti</strong> contiene i documenti che ti hanno inviato.</li>
+    </ul>
+    <p>Trovi entrambe le cartelle sotto <strong>Documenti → SkySend</strong>, oppure nella posizione che hai scelto al primo avvio.</p>
+    <figure>
+      <img src="docs/images/skysend-pannello-guida.png" alt="Pannello SkySend Studio con i riquadri Invia documenti e Richiedi documenti e i campi numerici della scadenza">
+      <figcaption>Il pannello di studio con un documento di prova.</figcaption>
+    </figure>
+    <p class="note">Per tenere raggiungibili i link, lascia il Mac acceso e connesso a Internet, con OrbStack attivo. Puoi chiudere il browser.</p>
+  </section>
+
+  <section id="inviare" aria-labelledby="inviare-titolo">
+    <h2 id="inviare-titolo">Inviare documenti</h2>
+    <ol>
+      <li>Copia i file in <strong>Download per i clienti</strong>.</li>
+      <li>Nel pannello apri <strong>Invia documenti</strong>, premi <strong>Aggiorna</strong> e spunta i file da condividere.</li>
+      <li>Scegli la scadenza. Puoi scrivere da <strong>1 a 15 giorni</strong> o selezionare <strong>5 minuti</strong> o <strong>1 ora</strong>. Scegli quanti download consentire.</li>
+      <li>Premi <strong>Crea link di download</strong>. In <strong>Link creati</strong> usa <strong>Copia link</strong> per mandare il link e <strong>Copia password</strong> per comunicare la password su un altro canale.</li>
+    </ol>
+    <h3>Cosa vede il cliente</h3>
+    <ol class="phone-steps">
+      <li><strong>Sblocca</strong><figure><img src="docs/images/skysend-cellulare-sblocca.png" alt="Pagina del cliente con il campo password e il pulsante Sblocca"><figcaption>Inserisce la password ricevuta e tocca Sblocca.</figcaption></figure></li>
+      <li><strong>Scarica</strong><figure><img src="docs/images/skysend-cellulare-scarica.png" alt="File sbloccato e pulsante Scarica"><figcaption>Controlla il nome del file e tocca Scarica.</figcaption></figure></li>
+    </ol>
+    <p>Per bloccare i download successivi, premi <strong>Revoca link</strong> nel pannello.</p>
+  </section>
+
+  <section id="ricevere" aria-labelledby="ricevere-titolo">
+    <h2 id="ricevere-titolo">Ricevere documenti</h2>
+    <ol>
+      <li>In <strong>Richiedi documenti</strong>, scrivi un riferimento che ti aiuti a riconoscere l’invio in Finder, per esempio un numero di pratica. Lo vedi solo nel tuo studio.</li>
+      <li>Scrivi la scadenza da <strong>1 a 15 giorni</strong> e scegli quanti invii consentire. Un singolo invio può contenere più file.</li>
+      <li>Premi <strong>Crea link di upload</strong>. In <strong>Link creati</strong> premi <strong>Copia link</strong> e manda al cliente quel link. Chi lo riceve può usarlo finché la richiesta è aperta e ci sono invii disponibili.</li>
+      <li>Dopo l’invio, apri in Finder <strong>Upload dai clienti</strong> e cerca la sottocartella che riporta il riferimento scelto dopo il codice della richiesta. Più file nello stesso invio arrivano in uno ZIP.</li>
+    </ol>
+    <h3>Cosa vede il cliente</h3>
+    <ol class="phone-steps">
+      <li><strong>Seleziona i file</strong><figure><img src="docs/images/skysend-cellulare-upload-seleziona.png" alt="File ZIP selezionato e pulsante Cifra e invia"><figcaption>Seleziona i file e tocca Cifra e invia.</figcaption></figure></li>
+      <li><strong>Attende il caricamento</strong><figure><img src="docs/images/skysend-cellulare-upload-caricamento.png" alt="Barra di avanzamento della cifratura e del caricamento"><figcaption>Tiene aperta la pagina fino al completamento.</figcaption></figure></li>
+      <li><strong>Legge la conferma</strong><figure><img src="docs/images/skysend-cellulare-upload-consegnato.png" alt="Conferma Consegnato con spunta verde"><figcaption>Consegnato conferma che l’invio è riuscito.</figcaption></figure></li>
+    </ol>
+    <p>Nel test da cellulare in 4G, uno ZIP da <strong>154,9 MB</strong> ha richiesto alcuni minuti e la pagina ha mostrato <strong>Consegnato</strong>.</p>
+    <p>Per fermare nuovi invii, premi <strong>Chiudi richiesta</strong> nel pannello.</p>
+  </section>
+
+  <section id="prova" aria-labelledby="prova-titolo">
+    <h2 id="prova-titolo">Prova e problemi comuni</h2>
+    <ol>
+      <li>Con un file fittizio crea un link di download. Aprilo dal telefono con il Wi-Fi spento, inserisci la password e scarica il file.</li>
+      <li>Crea un link di upload e aprilo dal telefono. Carica un file fittizio, aspetta <strong>Consegnato</strong> e verifica che il file compaia in <strong>Upload dai clienti</strong> sul Mac.</li>
+    </ol>
+    <ul>
+      <li><strong>Il Mac non apre Avvia SkySend.command.</strong> Apri l’app Terminale, scrivi <code>bash</code> seguito da uno spazio, trascina <strong>Avvia SkySend.command</strong> dal Finder nella finestra e premi Invio.</li>
+      <li><strong>Continua è ancora disattivato.</strong> Controlla di aver avviato <strong>Avvia SkySend.command</strong> dopo aver ottenuto il token e attendi che il tunnel si colleghi.</li>
+      <li><strong>Il pannello locale è chiuso.</strong> Apri <a href="http://127.0.0.1:8787">http://127.0.0.1:8787</a> sul Mac che ospita SkySend. Se il browser non trova la pagina, riapri OrbStack e fai doppio clic su <strong>Avvia SkySend.command</strong>.</li>
+      <li><strong>Il link cliente non si apre.</strong> Verifica che il link sia completo e ancora valido. Controlla che il tunnel sia <strong>Sano</strong>, che la rotta punti a <code>http://skysend:3000</code> e che l’indirizzo corrisponda a quello inserito durante l’avvio. Se hai appena aggiunto la rotta, prova da rete mobile.</li>
+      <li><strong>L’indirizzo pubblico da solo mostra 404.</strong> È il risultato previsto. Usa il link completo copiato da <strong>Link creati</strong> per provare la pagina del cliente.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Le personalizzazioni di SkySend Studio, tra cui il pannello locale, l’avvio su Mac e le cartelle di lavoro dello studio, sono state realizzate con l’ausilio dell’intelligenza artificiale.</p>
+    <p><a href="README.md">README tecnico e istruzioni per Windows e Linux</a></p>
+  </footer>
+</main>
+</body>
+</html>

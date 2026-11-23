@@ -1,0 +1,38 @@
+:root {
+  color-scheme: light;
+  font: 16px/1.5 system-ui, sans-serif;
+  color: #152e28;
+  background: #f4f6f0;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1060px; margin: auto; padding: 44px 22px 64px; }
+header { margin-bottom: 28px; }
+header p { margin: 0; color: #475b52; }
+h1 { font: 700 clamp(2.4rem, 7vw, 4rem)/1.08 Georgia, serif; margin: 5px 0; }
+h2 { font: 700 1.55rem Georgia, serif; margin: 0 0 22px; }
+p { margin: 12px 0 0; }
+.forms { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+section { border: 1px solid #c9d3c8; border-radius: 14px; padding: 24px; background: #fff; }
+.history { margin-top: 16px; }
+form { display: grid; gap: 14px; }
+label { display: grid; gap: 4px; }
+input, select, button { font: inherit; }
+input, select { min-width: 0; border: 1px solid #a9b9ad; border-radius: 6px; padding: 7px 9px; }
+button { cursor: pointer; border: 1px solid #19493a; border-radius: 6px; background: #19493a; color: #fff; padding: 7px 12px; }
+button:disabled { cursor: default; opacity: .55; }
+button[type=button] { background: #fff; color: #19493a; }
+.filebar, .transfer-heading, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.filebar, .transfer-heading { justify-content: space-between; }
+fieldset { min-width: 0; margin: 0; border: 1px solid #a9b9ad; border-radius: 6px; max-height: 210px; overflow: auto; }
+#files label { display: flex; align-items: flex-start; overflow-wrap: anywhere; padding: 4px 0; gap: 8px; }
+.expiry-modes { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.expiry-modes label { display: inline-flex; align-items: center; }
+.expiry [hidden] { display: none; }
+#send-days-field { margin-top: 8px; }
+input[type=number] { width: 6rem; }
+article { padding: 16px 0; border-top: 1px solid #d7ded7; overflow-wrap: anywhere; }
+article h3 { margin: 0; font-size: 1rem; }
+.actions { margin-top: 12px; }
+#message:not(:empty) { margin-bottom: 16px; padding: 12px; border-left: 4px solid #486753; background: #fff; }
+.error { color: #a01c24; }

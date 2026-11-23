@@ -1,0 +1,132 @@
+# Avvio consigliato su Mac: doppio clic su "Avvia SkySend.command".
+# Prima installazione: il programma chiede il sottodominio e il token del tunnel.
+name: skysend
+
+# Il pannello usa le librerie ufficiali già incluse in questa immagine.
+# Aggiorna questa versione insieme ai test del pannello e del filtro pubblico.
+x-skysend-image: &skysend-image skyfay/skysend:v3.3.1
+
+services:
+  # Server dei trasferimenti. Salva soltanto i file cifrati e il database.
+  # È sulla rete privata: Cloudflare Tunnel non può contattarlo direttamente.
+  server:
+    image: *skysend-image
+    restart: unless-stopped
+    environment:
+      BASE_URL: "https://${SKYSEND_HOSTNAME:?Avvia la configurazione guidata}"
+      TRUST_PROXY: "true"
+      ENABLED_SERVICES: file,request
+      FORCE_FILE_PASSWORD: "true"
+      FORCE_REQUEST_PASSWORD: "true"
+      FILE_MAX_SIZE: "${SKYSEND_FILE_MAX_SIZE:-250MB}"
+      FILE_UPLOAD_QUOTA_BYTES: "${SKYSEND_UPLOAD_QUOTA:-1GB}"
+      # Scadenze in secondi. I link di download mantengono anche 5 minuti e 1 ora.
+      FILE_EXPIRE_OPTIONS_SEC: "300,3600,86400,172800,259200,345600,432000,518400,604800,691200,777600,864000,950400,1036800,1123200,1209600,1296000"
+      FILE_REQUEST_EXPIRE_OPTIONS_SEC: "86400,172800,259200,345600,432000,518400,604800,691200,777600,864000,950400,1036800,1123200,1209600,1296000"
+      FILE_REQUEST_DEFAULT_EXPIRE_SEC: "86400"
+      FILE_REQUEST_UPLOAD_OPTIONS: "1,2,3,5,10"
+      FILE_REQUEST_DEFAULT_UPLOADS: "1"
+    volumes:
+      # Manteniamo i nomi dei volumi della configurazione precedente.
+      - skysend_data:/data
+      - skysend_uploads:/uploads
+    networks: [panel-backend, client-backend]
+
+  # Pannello privato e salvataggio automatico dei documenti in arrivo.
+  # Il browser di questo computer lo apre all'indirizzo http://127.0.0.1:8787.
+  panel:
+    image: *skysend-image
+    restart: unless-stopped
+    init: true
+    entrypoint: ["node", "/panel/server.mjs"]
+    user: "${SKYSEND_UID:-1000}:${SKYSEND_GID:-1000}"
+    environment:
+      PUBLIC_URL: "https://${SKYSEND_HOSTNAME}"
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - ./panel:/panel:ro
+      - type: bind
+        source: "${SKYSEND_WORK_DIR:-./lavoro}/Download per i clienti"
+        target: /documents/Download per i clienti
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: "${SKYSEND_WORK_DIR:-./lavoro}/Upload dai clienti"
+        target: /documents/Upload dai clienti
+        bind:
+          create_host_path: false
+      - type: bind
+        source: "${SKYSEND_STATE_DIR:-./stato}"
+        target: /state
+        bind:
+          create_host_path: false
+    # L'immagine dichiara questi volumi. Il pannello non usa i dati del server.
+    tmpfs: [/data, /uploads]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [panel-backend, local]
+    depends_on:
+      server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8787/health').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  # Ingresso per i soli link cliente. Il Caddyfile elenca ciò che passa.
+  # Conserva l'indirizzo http://skysend:3000 già previsto nel pannello Cloudflare.
+  client-gateway:
+    image: caddy:2.11-alpine
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/etc/skysend-gateway/start.sh"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./gateway:/etc/skysend-gateway:ro
+    networks:
+      client-backend:
+      tunnel:
+        aliases: [skysend]
+    depends_on:
+      server:
+        condition: service_healthy
+        # Quando Compose aggiorna SkySend, rigenera la pagina cliente con i suoi asset.
+        restart: true
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/api/config"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  # Connettore Cloudflare. La route deve puntare a http://skysend:3000.
+  # Il token è letto da file ed è montato solo in questo servizio.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ["tunnel", "--no-autoupdate", "run", "--token-file", "/run/secrets/tunnel_token"]
+    secrets: [tunnel_token]
+    networks: [tunnel]
+    depends_on:
+      client-gateway:
+        condition: service_healthy
+
+networks:
+  panel-backend:
+    internal: true
+  client-backend:
+    internal: true
+  # Rete dedicata alla pubblicazione su loopback. Il tunnel resta su un'altra rete.
+  local:
+  tunnel:
+
+volumes:
+  skysend_data:
+  skysend_uploads:
+
+secrets:
+  tunnel_token:
+    # L'avvio guidato su Mac usa una cartella fuori da Documenti e dal progetto.
+    file: "${SKYSEND_TUNNEL_TOKEN_FILE:-./secrets/tunnel-token}"

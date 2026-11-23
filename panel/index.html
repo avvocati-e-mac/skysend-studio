@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkySend Studio</title>
+<link rel="stylesheet" href="/style.css">
+<script src="/ui.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <p>Pannello locale</p>
+    <h1>SkySend Studio</h1>
+  </header>
+  <div id="message" role="status" aria-live="polite"></div>
+  <div class="forms">
+    <section>
+      <h2>Invia documenti</h2>
+      <form id="send">
+        <div class="filebar"><span>Download per i clienti</span><button type="button" id="refresh">Aggiorna</button></div>
+        <fieldset id="files"><legend>File disponibili</legend></fieldset>
+        <fieldset class="expiry">
+          <legend>Scadenza</legend>
+          <div class="expiry-modes">
+            <label><input type="radio" name="expiryMode" value="days" checked> Giorni</label>
+            <label><input type="radio" name="expiryMode" value="300"> 5 minuti</label>
+            <label><input type="radio" name="expiryMode" value="3600"> 1 ora</label>
+          </div>
+          <label id="send-days-field">Numero di giorni (1–15)
+            <input type="number" name="days" min="1" max="15" step="1" value="1" required>
+          </label>
+        </fieldset>
+        <label>Download consentiti <select name="count" required></select></label>
+        <button type="submit" disabled>Crea link di download</button>
+      </form>
+    </section>
+    <section>
+      <h2>Richiedi documenti</h2>
+      <form id="receive">
+        <label>Riferimento privato <input name="label" maxlength="100" placeholder="Es. Pratica 2026-15" required></label>
+        <label>Scadenza in giorni (1–15)
+          <input type="number" name="days" min="1" max="15" step="1" value="1" required>
+        </label>
+        <label>Invii consentiti <select name="count" required></select></label>
+        <button type="submit" disabled>Crea link di upload</button>
+      </form>
+      <p>I documenti ricevuti si salvano in <strong>Upload dai clienti</strong>.</p>
+    </section>
+  </div>
+  <section class="history">
+    <h2>Link creati</h2>
+    <div id="transfers"></div>
+  </section>
+</main>
+</body>
+</html>
