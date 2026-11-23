@@ -102,11 +102,19 @@
     <h3>3. Avvia SkySend sul Mac</h3>
     <ol>
       <li>Apri la cartella del progetto in Finder e fai doppio clic su <strong>Avvia SkySend.command</strong>.</li>
-      <li>Incolla il token e premi Invio. Durante l’incolla la finestra rimane vuota per proteggere la credenziale.</li>
-      <li>Scrivi il sottodominio completo, ad esempio <code>invii.studio.it</code>, e premi Invio.</li>
-      <li>Premi ancora Invio per usare <strong>Documenti → SkySend</strong>. Se Documenti è sincronizzata con iCloud e vuoi tenere i file sul Mac, scrivi il percorso di una cartella locale fuori da iCloud Drive, ad esempio <code>~/SkySend</code>.</li>
-      <li>Il primo avvio può richiedere qualche minuto. Quando Cloudflare indica <strong>Tunnel connesso con successo</strong>, premi <strong>Continua</strong>.</li>
+      <li>Quando il Terminale chiede il token, incollalo con <strong>⌘V</strong> e premi <strong>Invio</strong>. I caratteri restano nascosti mentre incolli.
+        <figure>
+          <img src="docs/images/terminale-incolla-token.png" alt="Terminale con il messaggio Incolla il token dopo --token e premi Invio">
+        </figure>
+      </li>
+      <li>Alla voce <strong>Sottodominio pubblico</strong>, scrivi l’indirizzo completo senza <code>https://</code>, ad esempio <code>invii.studio.it</code>, e premi <strong>Invio</strong>.</li>
+      <li>Alla voce <strong>Cartella di lavoro</strong>, premi <strong>Invio</strong> per usare <strong>Documenti → SkySend</strong>. Se Documenti è sincronizzata con iCloud e vuoi tenere i file sul Mac, scrivi il percorso di una cartella locale fuori da iCloud Drive, ad esempio <code>~/SkySend</code>, e premi <strong>Invio</strong>.</li>
     </ol>
+    <p>Il primo avvio può richiedere qualche minuto. Il Terminale mostra l’indirizzo del pannello quando SkySend è pronto. L’avviso sul sottodominio è previsto a questo punto, perché devi ancora collegarlo in Cloudflare.</p>
+    <figure>
+      <img src="docs/images/terminale-avvio-completato.png" alt="Terminale con i servizi avviati, l’indirizzo del pannello locale e le istruzioni per tornare a Cloudflare">
+    </figure>
+    <p>Torna a Cloudflare. Quando indica <strong>Tunnel connesso con successo</strong>, premi <strong>Continua</strong>.</p>
     <figure>
       <img src="docs/images/cloudflare-tunnel-connesso.png" alt="Cloudflare mostra Tunnel connesso con successo e il pulsante Continua è attivo">
     </figure>

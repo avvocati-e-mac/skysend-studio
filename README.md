@@ -34,7 +34,13 @@ In **Configura ambiente**, seleziona **Docker** anche se stai usando un Mac. Usa
 
 ### 3. Avvia SkySend e attendi la connessione
 
-Lascia aperta la scheda di Cloudflare. Fai doppio clic su **Avvia SkySend.command**, incolla il token e inserisci il sottodominio che pubblicherai al passo successivo, per esempio `invii.studio.it`. Premi Invio per scegliere `Documenti/SkySend` oppure indica un’altra cartella. Si apre il pannello locale. Durante il primo avvio Docker può impiegare qualche minuto a scaricare le immagini.
+Lascia aperta la scheda di Cloudflare e fai doppio clic su **Avvia SkySend.command**. Nel Terminale, incolla il token con **⌘V** e premi **Invio**. I caratteri del token restano nascosti.
+
+![Terminale con la richiesta di incollare il token e premere Invio](docs/images/terminale-incolla-token.png)
+
+Alla voce **Sottodominio pubblico** scrivi l’indirizzo completo, per esempio `invii.studio.it`, e premi **Invio**. Alla voce **Cartella di lavoro** premi **Invio** per scegliere `Documenti/SkySend` oppure indica un’altra cartella. Durante il primo avvio Docker può impiegare qualche minuto a scaricare le immagini. Poi si apre il pannello locale.
+
+![Terminale al termine dell’avvio con l’indirizzo del pannello locale](docs/images/terminale-avvio-completato.png)
 
 ![Pannello locale di SkySend Studio al primo avvio](docs/images/skysend-pannello-locale.png)
 
